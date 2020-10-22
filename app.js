@@ -1,22 +1,20 @@
 // ./app.js
 
 const express = require('express');
+const morgan = require('morgan');
+const cookieParser = require('cookie-parser');
 
 const routes = require('./routes');
 
-// Imported Morgan
-const morgan = require('morgan');
-
 const app = express();
 
-// Allowing our app to use morgan 
-app.use(morgan('dev'));
-
 app.set('view engine', 'pug');
-
+app.use(morgan('dev'));
+app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 app.use(routes);
 
-// Catch errors 
+// Catch errors
 app.use((req, res, next) => {
     const err = new Error('The requested page couldn\'t be found.');
     err.status = 404;
@@ -32,7 +30,7 @@ app.use((err, req, res, next) => {
     }
     next(err);
   });
-  
+
   // Error handler for 404 errors.
 app.use((err, req, res, next) => {
 if (err.status === 404) {
@@ -59,4 +57,3 @@ res.render('error', {
 // Define a port and start listening for connections.
 
 module.exports = app;
-
